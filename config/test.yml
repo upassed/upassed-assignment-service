@@ -1,0 +1,36 @@
+env: "testing"
+application_name: upassed-assignment-service
+grpc_server:
+    port: "44044"
+    timeout: 10m
+storage:
+    host: localhost
+    port: 5432
+    database_name: upassed-assignment-service-db
+    user: user
+    password: password
+migrations:
+    migrations_path: "../../../migration/scripts"
+    migrations_table_name: migrations
+services:
+    authentication_service:
+        host: localhost
+        port: 44045
+timeouts:
+    endpoint_execution_timeout_ms: 60000
+tracing:
+    host: localhost
+    port: 14268
+    assignment_tracer_name: assignment-tracer
+rabbit:
+    user: upassed-rabbit-user
+    password: upassed-rabbit-password
+    host: localhost
+    port: 5672
+    exchange:
+        name: upassed-assignment-service
+        type: direct
+    queues:
+        assignment_create:
+            name: assignment-create-queue
+            routing_key: assignment.create

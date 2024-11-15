@@ -1,0 +1,36 @@
+env: "local"
+application_name: upassed-assignment-service
+grpc_server:
+    port: ${GRPC_SERVER_PORT}
+    timeout: ${GRPC_SERVER_TIMEOUT}
+storage:
+    host: ${POSTGRES_HOST}
+    port: ${POSTGRES_PORT}
+    database_name: ${POSTGRES_DATABASE_NAME}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+migrations:
+    migrations_path: ${MIGRATIONS_PATH}
+    migrations_table_name: ${MIGRATIONS_TABLE_NAME}
+services:
+    authentication_service:
+        host: ${AUTHENTICATION_SERVICE_HOST}
+        port: ${AUTHENTICATION_SERVICE_PORT}
+timeouts:
+    endpoint_execution_timeout_ms: ${ENDPOINT_EXECUTION_TIMEOUT_MS}
+tracing:
+    host: ${JAEGER_HOST}
+    port: ${JAEGER_PORT}
+    assignment_tracer_name: ${ASSIGNMENT_TRACER_NAME}
+rabbit:
+    user: ${RABBIT_USER}
+    password: ${RABBIT_PASSWORD}
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    exchange:
+        name: ${RABBIT_EXCHANGE_NAME}
+        type: ${RABBIT_EXCHANGE_TYPE}
+    queues:
+        assignment_create:
+            name: ${RABBIT_ASSIGNMENT_CREATE_QUEUE_NAME}
+            routing_key: ${RABBIT_ASSIGNMENT_CREATE_QUEUE_ROUTING_KEY}
