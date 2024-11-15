@@ -4,9 +4,12 @@ import (
 	"github.com/upassed/upassed-assignment-service/internal/config"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
 	"github.com/upassed/upassed-assignment-service/internal/messanging"
+	assignmentRabbit "github.com/upassed/upassed-assignment-service/internal/messanging/assignment"
 	"github.com/upassed/upassed-assignment-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-assignment-service/internal/repository"
+	assignmentRepo "github.com/upassed/upassed-assignment-service/internal/repository/assignment"
 	"github.com/upassed/upassed-assignment-service/internal/server"
+	assignmentSvc "github.com/upassed/upassed-assignment-service/internal/service/assignment"
 	"log/slog"
 )
 
@@ -17,12 +20,12 @@ type App struct {
 func New(config *config.Config, log *slog.Logger) (*App, error) {
 	log = logging.Wrap(log, logging.WithOp(New))
 
-	_, err := repository.OpenGormDbConnection(config, log)
+	db, err := repository.OpenGormDbConnection(config, log)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = messanging.OpenRabbitConnection(config, log)
+	rabbit, err := messanging.OpenRabbitConnection(config, log)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +34,10 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	assignmentRepository := assignmentRepo.New(db, config, log)
+	assignmentService := assignmentSvc.New(config, log, assignmentRepository)
+	assignmentRabbit.Initialize(authClient, assignmentService, rabbit, config, log)
 
 	appServer, err := server.New(server.AppServerCreateParams{
 		Config:     config,
