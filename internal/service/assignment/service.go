@@ -20,6 +20,7 @@ type serviceImpl struct {
 
 type repository interface {
 	Save(ctx context.Context, assignment *domain.Assignment) error
+	CheckDuplicates(ctx context.Context, assignment *domain.Assignment) error
 }
 
 func New(cfg *config.Config, log *slog.Logger, repository repository) Service {

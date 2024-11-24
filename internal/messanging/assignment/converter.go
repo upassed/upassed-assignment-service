@@ -17,9 +17,14 @@ func ConvertToAssignmentCreateRequest(messageBody []byte) (*event.AssignmentCrea
 }
 
 func ConvertToBusinessAssignment(request *event.AssignmentCreateRequest) *business.Assignment {
+	groupIDs := make([]uuid.UUID, 0, len(request.GroupIDs))
+	for _, groupID := range request.GroupIDs {
+		groupIDs = append(groupIDs, uuid.MustParse(groupID))
+	}
+
 	return &business.Assignment{
-		ID:      uuid.New(),
-		FormID:  uuid.MustParse(request.FormID),
-		GroupID: uuid.MustParse(request.GroupID),
+		ID:       uuid.New(),
+		FormID:   uuid.MustParse(request.FormID),
+		GroupIDs: groupIDs,
 	}
 }

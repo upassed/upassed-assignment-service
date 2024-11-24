@@ -6,6 +6,7 @@ require (
 	github.com/brianvoe/gofakeit/v7 v7.1.2
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/golang-migrate/migrate/v4 v4.18.1
+	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/joho/godotenv v1.5.1

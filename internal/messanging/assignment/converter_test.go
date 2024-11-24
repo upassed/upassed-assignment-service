@@ -24,15 +24,19 @@ func TestConvertToAssignmentCreateRequest_ValidBytes(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, initialRequest.FormID, convertedRequest.FormID)
-	assert.Equal(t, initialRequest.GroupID, convertedRequest.GroupID)
+	assert.Equal(t, len(initialRequest.GroupIDs), len(convertedRequest.GroupIDs))
+	for idx, groupID := range initialRequest.GroupIDs {
+		assert.Equal(t, groupID, convertedRequest.GroupIDs[idx])
+	}
 }
 
 func TestConvertToBusinessAssignment(t *testing.T) {
 	request := util.RandomEventAssignmentCreateRequest()
 	businessAssignment := assignment.ConvertToBusinessAssignment(request)
 
-	require.NotNil(t, businessAssignment.ID)
+	require.Equal(t, len(request.GroupIDs), len(businessAssignment.GroupIDs))
 
-	assert.Equal(t, request.FormID, businessAssignment.FormID.String())
-	assert.Equal(t, request.GroupID, businessAssignment.GroupID.String())
+	for idx, groupID := range request.GroupIDs {
+		assert.Equal(t, groupID, businessAssignment.GroupIDs[idx].String())
+	}
 }

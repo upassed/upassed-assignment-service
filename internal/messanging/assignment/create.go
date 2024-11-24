@@ -38,8 +38,7 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 
 		teacherUsername := ctx.Value(auth.UsernameKey).(string)
 		span.SetAttributes(
-			attribute.String("formID", request.FormID),
-			attribute.String("groupID", request.GroupID),
+			attribute.String("assignmentsNumber", request.FormID),
 			attribute.String(auth.UsernameKey, teacherUsername),
 		)
 

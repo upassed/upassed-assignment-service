@@ -10,3 +10,8 @@ tasks:
         cmds:
             - go clean -testcache
             - gotestsum --format-hide-empty-pkg --format-icons hivis -- -coverprofile=cover.out ./...
+    mockgen:
+        desc: "Generate all mocks"
+        cmds:
+            - rm -rf internal/util/mocks/*
+            - mockgen -source=internal/repository/assignment/repository.go -destination=internal/util/mocks/mock_assignment_repository.go -package mocks -mock_names Repository=AssignmentRepository Repository
