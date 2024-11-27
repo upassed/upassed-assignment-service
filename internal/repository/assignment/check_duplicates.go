@@ -31,7 +31,7 @@ func (repository *repositoryImpl) CheckDuplicates(ctx context.Context, assignmen
 		logging.WithAny("formID", assignments[0].FormID),
 	)
 
-	log.Info("started checking assignment duplicates")
+	log.Info("started checking assignment duplicates in the database")
 	foundAssignments := make([]*domain.Assignment, 0)
 	groupIDs := repository.mergeGroupIDs(assignments)
 

@@ -2,6 +2,8 @@ package assignment
 
 import (
 	"context"
+	"github.com/redis/go-redis/v9"
+	"github.com/upassed/upassed-assignment-service/internal/caching/assignment"
 	"github.com/upassed/upassed-assignment-service/internal/config"
 	domain "github.com/upassed/upassed-assignment-service/internal/repository/model"
 	"gorm.io/gorm"
@@ -14,15 +16,18 @@ type Repository interface {
 }
 
 type repositoryImpl struct {
-	db  *gorm.DB
-	cfg *config.Config
-	log *slog.Logger
+	db    *gorm.DB
+	cache *assignment.RedisClient
+	cfg   *config.Config
+	log   *slog.Logger
 }
 
-func New(db *gorm.DB, cfg *config.Config, log *slog.Logger) Repository {
+func New(db *gorm.DB, cacheClient *redis.Client, cfg *config.Config, log *slog.Logger) Repository {
+	cache := assignment.New(cacheClient, cfg, log)
 	return &repositoryImpl{
-		db:  db,
-		cfg: cfg,
-		log: log,
+		db:    db,
+		cache: cache,
+		cfg:   cfg,
+		log:   log,
 	}
 }

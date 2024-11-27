@@ -14,6 +14,13 @@ services:
     ports:
       - "16686:16686"
       - "4317:4317"
+  redis:
+    image: redis:7.4
+    container_name: upassed_assignment_service_redis
+    environment:
+      - REDIS_PASSWORD=password
+    ports:
+      - "6380:6379"
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: upassed_assignment_service_rabbitmq

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/upassed/upassed-assignment-service/internal/caching"
 	"github.com/upassed/upassed-assignment-service/internal/config"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
 	"github.com/upassed/upassed-assignment-service/internal/messanging"
@@ -25,6 +26,11 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 		return nil, err
 	}
 
+	redis, err := caching.OpenRedisConnection(config, log)
+	if err != nil {
+		return nil, err
+	}
+
 	rabbit, err := messanging.OpenRabbitConnection(config, log)
 	if err != nil {
 		return nil, err
@@ -35,7 +41,7 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 		return nil, err
 	}
 
-	assignmentRepository := assignmentRepo.New(db, config, log)
+	assignmentRepository := assignmentRepo.New(db, redis, config, log)
 	assignmentService := assignmentSvc.New(config, log, assignmentRepository)
 	assignmentRabbit.Initialize(authClient, assignmentService, rabbit, config, log)
 

@@ -22,6 +22,13 @@ tracing:
     host: ${JAEGER_HOST}
     port: ${JAEGER_PORT}
     assignment_tracer_name: ${ASSIGNMENT_TRACER_NAME}
+redis:
+    user: ${REDIS_USER}
+    password: ${REDIS_PASSWORD}
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    database_number: ${REDIS_DATABASE_NUMBER}
+    entity_ttl: ${REDIS_ENTITY_TTL}
 rabbit:
     user: ${RABBIT_USER}
     password: ${RABBIT_PASSWORD}

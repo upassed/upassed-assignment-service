@@ -2,8 +2,11 @@ package assignment_test
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/upassed/upassed-assignment-service/internal/caching"
+	cache "github.com/upassed/upassed-assignment-service/internal/caching/assignment"
 	"github.com/upassed/upassed-assignment-service/internal/config"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
 	"github.com/upassed/upassed-assignment-service/internal/repository"
@@ -18,6 +21,7 @@ import (
 )
 
 var (
+	assignmentCache      *cache.RedisClient
 	assignmentRepository assignment.Repository
 )
 
@@ -34,7 +38,7 @@ func TestMain(m *testing.M) {
 
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal("unable to parse cfg: ", err)
+		log.Fatal("unable to parse config: ", err)
 	}
 
 	ctx := context.Background()
@@ -54,15 +58,36 @@ func TestMain(m *testing.M) {
 		log.Fatal("unable to run migrations: ", err)
 	}
 
+	redisTestcontainer, err := testcontainer.NewRedisTestcontainer(ctx, cfg)
+	if err != nil {
+		log.Fatal("unable to run redis testcontainer: ", err)
+	}
+
+	port, err = redisTestcontainer.Start(ctx)
+	if err != nil {
+		log.Fatal("unable to get a postgres testcontainer real port: ", err)
+	}
+
+	cfg.Redis.Port = strconv.Itoa(port)
 	db, err := repository.OpenGormDbConnection(cfg, logger)
 	if err != nil {
 		log.Fatal("unable to open connection to postgres: ", err)
 	}
 
-	assignmentRepository = assignment.New(db, cfg, logger)
+	redis, err := caching.OpenRedisConnection(cfg, logger)
+	if err != nil {
+		log.Fatal("unable to open connection to redis: ", err)
+	}
+
+	assignmentCache = cache.New(redis, cfg, logger)
+	assignmentRepository = assignment.New(db, redis, cfg, logger)
 	exitCode := m.Run()
 	if err := postgresTestcontainer.Stop(ctx); err != nil {
 		log.Println("unable to stop postgres testcontainer: ", err)
+	}
+
+	if err := redisTestcontainer.Stop(ctx); err != nil {
+		log.Println("unable to stop redis testcontainer: ", err)
 	}
 
 	os.Exit(exitCode)
@@ -75,4 +100,30 @@ func TestCheckDuplicates_DuplicatesNotFound(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, 0, len(foundDuplicates))
+}
+
+func TestSave_HappyPath(t *testing.T) {
+	ctx := context.Background()
+	formID := uuid.New()
+	assignmentsToSave := util.RandomDomainAssignments()
+
+	for _, domainAssignment := range assignmentsToSave {
+		domainAssignment.FormID = formID
+	}
+
+	err := assignmentRepository.Save(ctx, assignmentsToSave)
+	require.NoError(t, err)
+
+	for _, savedAssignment := range assignmentsToSave {
+		cachedAssignments, err := assignmentCache.GetByGroupID(ctx, savedAssignment.GroupID)
+		require.NoError(t, err)
+
+		assert.Equal(t, 1, len(cachedAssignments))
+		assert.Equal(t, formID, cachedAssignments[0].FormID)
+	}
+
+	cachedAssignments, err := assignmentCache.GetByFormID(ctx, formID)
+	require.NoError(t, err)
+
+	assert.Equal(t, len(assignmentsToSave), len(cachedAssignments))
 }
