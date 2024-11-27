@@ -4,6 +4,7 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/google/uuid"
 	event "github.com/upassed/upassed-assignment-service/internal/messanging/model"
+	domain "github.com/upassed/upassed-assignment-service/internal/repository/model"
 	business "github.com/upassed/upassed-assignment-service/internal/service/model"
 )
 
@@ -34,4 +35,19 @@ func RandomBusinessAssignment() *business.Assignment {
 		FormID:   uuid.New(),
 		GroupIDs: groupIDs,
 	}
+}
+
+func RandomDomainAssignments() []*domain.Assignment {
+	assignmentsCount := gofakeit.IntRange(10, 20)
+	assignments := make([]*domain.Assignment, 0, assignmentsCount)
+
+	for i := 0; i < assignmentsCount; i++ {
+		assignments = append(assignments, &domain.Assignment{
+			ID:      uuid.New(),
+			FormID:  uuid.New(),
+			GroupID: uuid.New(),
+		})
+	}
+
+	return assignments
 }

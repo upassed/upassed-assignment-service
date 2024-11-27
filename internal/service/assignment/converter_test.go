@@ -9,13 +9,12 @@ import (
 
 func TestConvertToDomainAssignment(t *testing.T) {
 	businessAssignment := util.RandomBusinessAssignment()
-	domainAssignment := assignment.ConvertToDomainAssignment(businessAssignment)
+	domainAssignments := assignment.ConvertToDomainAssignments(businessAssignment)
 
-	assert.Equal(t, businessAssignment.ID, domainAssignment.ID)
-	assert.Equal(t, businessAssignment.FormID, domainAssignment.FormID)
-	assert.Equal(t, len(businessAssignment.GroupIDs), len(domainAssignment.GroupIDs))
-
-	for idx, businessGroupID := range businessAssignment.GroupIDs {
-		assert.Equal(t, businessGroupID, domainAssignment.GroupIDs[idx])
+	assert.Equal(t, len(businessAssignment.GroupIDs), len(domainAssignments))
+	for idx, domainAssignment := range domainAssignments {
+		assert.Equal(t, businessAssignment.ID, domainAssignment.ID)
+		assert.Equal(t, businessAssignment.FormID, domainAssignment.FormID)
+		assert.Equal(t, businessAssignment.GroupIDs[idx], domainAssignment.GroupID)
 	}
 }

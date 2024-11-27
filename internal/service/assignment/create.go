@@ -3,6 +3,7 @@ package assignment
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/upassed/upassed-assignment-service/internal/async"
 	"github.com/upassed/upassed-assignment-service/internal/handling"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
@@ -17,6 +18,7 @@ import (
 
 var (
 	ErrAssignmentCreateDeadlineExceeded = errors.New("assignment create deadline exceeded")
+	ErrDuplicateAssignmentsFound        = errors.New("found duplicate assignments")
 )
 
 func (service *serviceImpl) Create(ctx context.Context, assignment *business.Assignment) (*business.AssignmentCreateResponse, error) {
@@ -40,23 +42,34 @@ func (service *serviceImpl) Create(ctx context.Context, assignment *business.Ass
 
 	assignmentCreateResponse, err := async.ExecuteWithTimeout(spanContext, timeout, func(ctx context.Context) (*business.AssignmentCreateResponse, error) {
 		log.Info("checking assignment duplicates")
-		domainAssignment := ConvertToDomainAssignment(assignment)
-		err := service.repository.CheckDuplicates(ctx, domainAssignment)
+		domainAssignments := ConvertToDomainAssignments(assignment)
+		duplicateAssignments, err := service.repository.CheckDuplicates(ctx, domainAssignments)
 		if err != nil {
 			log.Error("unable to check assignment duplicates", logging.Error(err))
 			tracing.SetSpanError(span, err)
 			return nil, err
 		}
 
+		if len(duplicateAssignments) != 0 {
+			log.Error("found duplicate assignments", slog.Int("assignmentDuplicatesCount", len(duplicateAssignments)))
+			tracing.SetSpanError(span, ErrDuplicateAssignmentsFound)
+			return nil, handling.New(ErrDuplicateAssignmentsFound.Error(), codes.AlreadyExists)
+		}
+
 		log.Info("saving assignment data to the database")
-		if err := service.repository.Save(ctx, domainAssignment); err != nil {
+		if err := service.repository.Save(ctx, domainAssignments); err != nil {
 			log.Error("unable to save assignment data to the database", logging.Error(err))
 			tracing.SetSpanError(span, err)
 			return nil, err
 		}
 
+		createdAssignmentIDs := make([]uuid.UUID, 0, len(domainAssignments))
+		for _, domainAssignment := range domainAssignments {
+			createdAssignmentIDs = append(createdAssignmentIDs, domainAssignment.ID)
+		}
+
 		return &business.AssignmentCreateResponse{
-			CreatedAssignmentID: domainAssignment.ID,
+			CreatedAssignmentIDs: createdAssignmentIDs,
 		}, nil
 	})
 
@@ -72,6 +85,6 @@ func (service *serviceImpl) Create(ctx context.Context, assignment *business.Ass
 		return nil, handling.Process(err)
 	}
 
-	log.Info("assignment successfully created", slog.Any("createdAssignmentID", assignmentCreateResponse.CreatedAssignmentID))
+	log.Info("assignment successfully created", slog.Any("createdAssignmentIDs", assignmentCreateResponse.CreatedAssignmentIDs))
 	return assignmentCreateResponse, nil
 }

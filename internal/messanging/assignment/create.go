@@ -57,7 +57,7 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 			return rabbitmq.NackDiscard
 		}
 
-		log.Info("successfully created assignment", slog.Any("createdAssignmentID", response.CreatedAssignmentID))
+		log.Info("successfully created assignment", slog.Any("createdAssignmentIds", response.CreatedAssignmentIDs))
 		return rabbitmq.Ack
 	}
 

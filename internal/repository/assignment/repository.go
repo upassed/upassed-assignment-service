@@ -9,8 +9,8 @@ import (
 )
 
 type Repository interface {
-	Save(ctx context.Context, assignment *domain.Assignment) error
-	CheckDuplicates(ctx context.Context, assignment *domain.Assignment) error
+	Save(ctx context.Context, assignments []*domain.Assignment) error
+	CheckDuplicates(ctx context.Context, assignments []*domain.Assignment) ([]*domain.Assignment, error)
 }
 
 type repositoryImpl struct {

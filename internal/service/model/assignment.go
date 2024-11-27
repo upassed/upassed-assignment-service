@@ -9,5 +9,5 @@ type Assignment struct {
 }
 
 type AssignmentCreateResponse struct {
-	CreatedAssignmentID uuid.UUID
+	CreatedAssignmentIDs []uuid.UUID
 }

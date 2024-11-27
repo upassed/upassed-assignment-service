@@ -36,29 +36,30 @@ func (m *AssignmentRepository) EXPECT() *AssignmentRepositoryMockRecorder {
 }
 
 // CheckDuplicates mocks base method.
-func (m *AssignmentRepository) CheckDuplicates(ctx context.Context, assignment *domain.Assignment) error {
+func (m *AssignmentRepository) CheckDuplicates(ctx context.Context, assignments []*domain.Assignment) ([]*domain.Assignment, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckDuplicates", ctx, assignment)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "CheckDuplicates", ctx, assignments)
+	ret0, _ := ret[0].([]*domain.Assignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CheckDuplicates indicates an expected call of CheckDuplicates.
-func (mr *AssignmentRepositoryMockRecorder) CheckDuplicates(ctx, assignment interface{}) *gomock.Call {
+func (mr *AssignmentRepositoryMockRecorder) CheckDuplicates(ctx, assignments interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckDuplicates", reflect.TypeOf((*AssignmentRepository)(nil).CheckDuplicates), ctx, assignment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckDuplicates", reflect.TypeOf((*AssignmentRepository)(nil).CheckDuplicates), ctx, assignments)
 }
 
 // Save mocks base method.
-func (m *AssignmentRepository) Save(ctx context.Context, assignment *domain.Assignment) error {
+func (m *AssignmentRepository) Save(ctx context.Context, assignments []*domain.Assignment) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Save", ctx, assignment)
+	ret := m.ctrl.Call(m, "Save", ctx, assignments)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Save indicates an expected call of Save.
-func (mr *AssignmentRepositoryMockRecorder) Save(ctx, assignment interface{}) *gomock.Call {
+func (mr *AssignmentRepositoryMockRecorder) Save(ctx, assignments interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*AssignmentRepository)(nil).Save), ctx, assignment)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*AssignmentRepository)(nil).Save), ctx, assignments)
 }
