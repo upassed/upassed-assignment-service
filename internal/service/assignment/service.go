@@ -24,6 +24,8 @@ type serviceImpl struct {
 type repository interface {
 	Save(ctx context.Context, assignment []*domain.Assignment) error
 	CheckDuplicates(ctx context.Context, assignments []*domain.Assignment) ([]*domain.Assignment, error)
+	FindByFormID(ctx context.Context, formID uuid.UUID) ([]*domain.Assignment, error)
+	FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Assignment, error)
 }
 
 func New(cfg *config.Config, log *slog.Logger, repository repository) Service {

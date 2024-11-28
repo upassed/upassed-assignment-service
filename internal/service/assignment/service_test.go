@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/upassed/upassed-assignment-service/internal/config"
@@ -159,4 +160,128 @@ func TestCreate_HappyPath(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, len(assignmentToCreate.GroupIDs), len(assignmentCreateResponse.CreatedAssignmentIDs))
+}
+
+func TestFindByFormID_ErrorInRepository(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+	expectedRepositoryError := errors.New("some repo error")
+
+	repository.EXPECT().
+		FindByFormID(gomock.Any(), formID).
+		Return(nil, expectedRepositoryError)
+
+	_, err := service.FindByFormID(ctx, formID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, expectedRepositoryError.Error(), convertedError.Message())
+	assert.Equal(t, codes.Internal, convertedError.Code())
+}
+
+func TestFindByFormID_ErrorDeadlineExceeded(t *testing.T) {
+	oldTimeout := cfg.Timeouts.EndpointExecutionTimeoutMS
+	cfg.Timeouts.EndpointExecutionTimeoutMS = "0"
+
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+	domainAssignments := util.RandomDomainAssignments()
+
+	repository.EXPECT().
+		FindByFormID(gomock.Any(), formID).
+		Return(domainAssignments, nil)
+
+	_, err := service.FindByFormID(ctx, formID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, assignmentSvc.ErrAssignmentFindByFormIDDeadlineExceeded.Error(), convertedError.Message())
+	assert.Equal(t, codes.DeadlineExceeded, convertedError.Code())
+
+	cfg.Timeouts.EndpointExecutionTimeoutMS = oldTimeout
+}
+
+func TestFindByFormID_HappyPath(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+	domainAssignments := util.RandomDomainAssignments()
+
+	repository.EXPECT().
+		FindByFormID(gomock.Any(), formID).
+		Return(domainAssignments, nil)
+
+	foundAssignment, err := service.FindByFormID(ctx, formID)
+	require.NoError(t, err)
+
+	for idx, domainAssignment := range domainAssignments {
+		assert.Equal(t, domainAssignment.GroupID, foundAssignment.GroupIDs[idx])
+	}
+}
+
+func TestFindByGroupID_ErrorInRepository(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	groupID := uuid.New()
+	expectedRepositoryError := errors.New("some repo error")
+
+	repository.EXPECT().
+		FindByGroupID(gomock.Any(), groupID).
+		Return(nil, expectedRepositoryError)
+
+	_, err := service.FindByGroupID(ctx, groupID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, expectedRepositoryError.Error(), convertedError.Message())
+	assert.Equal(t, codes.Internal, convertedError.Code())
+}
+
+func TestFindByGroupID_ErrorDeadlineExceeded(t *testing.T) {
+	oldTimeout := cfg.Timeouts.EndpointExecutionTimeoutMS
+	cfg.Timeouts.EndpointExecutionTimeoutMS = "0"
+
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	groupID := uuid.New()
+	domainAssignments := util.RandomDomainAssignments()
+
+	repository.EXPECT().
+		FindByGroupID(gomock.Any(), groupID).
+		Return(domainAssignments, nil)
+
+	_, err := service.FindByGroupID(ctx, groupID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, assignmentSvc.ErrAssignmentFindByGroupIDDeadlineExceeded.Error(), convertedError.Message())
+	assert.Equal(t, codes.DeadlineExceeded, convertedError.Code())
+
+	cfg.Timeouts.EndpointExecutionTimeoutMS = oldTimeout
+}
+
+func TestFindByGroupID_HappyPath(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	groupID := uuid.New()
+	domainAssignments := util.RandomDomainAssignments()
+
+	repository.EXPECT().
+		FindByGroupID(gomock.Any(), groupID).
+		Return(domainAssignments, nil)
+
+	foundAssignment, err := service.FindByGroupID(ctx, groupID)
+	require.NoError(t, err)
+
+	for idx, domainAssignment := range domainAssignments {
+		assert.Equal(t, domainAssignment.FormID, foundAssignment.FormIDs[idx])
+	}
 }

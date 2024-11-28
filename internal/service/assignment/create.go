@@ -3,7 +3,6 @@ package assignment
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
 	"github.com/upassed/upassed-assignment-service/internal/async"
 	"github.com/upassed/upassed-assignment-service/internal/handling"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
@@ -63,14 +62,7 @@ func (service *serviceImpl) Create(ctx context.Context, assignment *business.For
 			return nil, err
 		}
 
-		createdAssignmentIDs := make([]uuid.UUID, 0, len(domainAssignments))
-		for _, domainAssignment := range domainAssignments {
-			createdAssignmentIDs = append(createdAssignmentIDs, domainAssignment.ID)
-		}
-
-		return &business.AssignmentCreateResponse{
-			CreatedAssignmentIDs: createdAssignmentIDs,
-		}, nil
+		return ConvertToAssignmentCreateResponse(domainAssignments), nil
 	})
 
 	if err != nil {

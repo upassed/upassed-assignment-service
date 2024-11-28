@@ -30,11 +30,12 @@ func TestConvertToAssignmentCreateRequest_ValidBytes(t *testing.T) {
 	}
 }
 
-func TestConvertToBusinessAssignment(t *testing.T) {
+func TestConvertToBusinessFormAssignment(t *testing.T) {
 	request := util.RandomEventAssignmentCreateRequest()
-	businessAssignment := assignment.ConvertToBusinessAssignment(request)
+	businessAssignment := assignment.ConvertToBusinessFormAssignment(request)
 
 	require.Equal(t, len(request.GroupIDs), len(businessAssignment.GroupIDs))
+	assert.Equal(t, request.FormID, businessAssignment.FormID.String())
 
 	for idx, groupID := range request.GroupIDs {
 		assert.Equal(t, groupID, businessAssignment.GroupIDs[idx].String())

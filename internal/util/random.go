@@ -31,7 +31,6 @@ func RandomBusinessFormAssignment() *business.FormAssignment {
 	}
 
 	return &business.FormAssignment{
-		ID:       uuid.New(),
 		FormID:   uuid.New(),
 		GroupIDs: groupIDs,
 	}
@@ -46,7 +45,6 @@ func RandomBusinessGroupAssignment() *business.GroupAssignment {
 	}
 
 	return &business.GroupAssignment{
-		ID:      uuid.New(),
 		GroupID: uuid.New(),
 		FormIDs: formIDs,
 	}

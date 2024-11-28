@@ -120,6 +120,36 @@ func (mr *MockrepositoryMockRecorder) CheckDuplicates(ctx, assignments interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckDuplicates", reflect.TypeOf((*Mockrepository)(nil).CheckDuplicates), ctx, assignments)
 }
 
+// FindByFormID mocks base method.
+func (m *Mockrepository) FindByFormID(ctx context.Context, formID uuid.UUID) ([]*domain.Assignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByFormID", ctx, formID)
+	ret0, _ := ret[0].([]*domain.Assignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByFormID indicates an expected call of FindByFormID.
+func (mr *MockrepositoryMockRecorder) FindByFormID(ctx, formID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByFormID", reflect.TypeOf((*Mockrepository)(nil).FindByFormID), ctx, formID)
+}
+
+// FindByGroupID mocks base method.
+func (m *Mockrepository) FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Assignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByGroupID", ctx, groupID)
+	ret0, _ := ret[0].([]*domain.Assignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByGroupID indicates an expected call of FindByGroupID.
+func (mr *MockrepositoryMockRecorder) FindByGroupID(ctx, groupID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGroupID", reflect.TypeOf((*Mockrepository)(nil).FindByGroupID), ctx, groupID)
+}
+
 // Save mocks base method.
 func (m *Mockrepository) Save(ctx context.Context, assignment []*domain.Assignment) error {
 	m.ctrl.T.Helper()

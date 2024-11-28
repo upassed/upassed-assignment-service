@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 	domain "github.com/upassed/upassed-assignment-service/internal/repository/model"
 )
 
@@ -48,6 +49,36 @@ func (m *AssignmentRepository) CheckDuplicates(ctx context.Context, assignments 
 func (mr *AssignmentRepositoryMockRecorder) CheckDuplicates(ctx, assignments interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckDuplicates", reflect.TypeOf((*AssignmentRepository)(nil).CheckDuplicates), ctx, assignments)
+}
+
+// FindByFormID mocks base method.
+func (m *AssignmentRepository) FindByFormID(ctx context.Context, formID uuid.UUID) ([]*domain.Assignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByFormID", ctx, formID)
+	ret0, _ := ret[0].([]*domain.Assignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByFormID indicates an expected call of FindByFormID.
+func (mr *AssignmentRepositoryMockRecorder) FindByFormID(ctx, formID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByFormID", reflect.TypeOf((*AssignmentRepository)(nil).FindByFormID), ctx, formID)
+}
+
+// FindByGroupID mocks base method.
+func (m *AssignmentRepository) FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Assignment, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByGroupID", ctx, groupID)
+	ret0, _ := ret[0].([]*domain.Assignment)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByGroupID indicates an expected call of FindByGroupID.
+func (mr *AssignmentRepositoryMockRecorder) FindByGroupID(ctx, groupID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGroupID", reflect.TypeOf((*AssignmentRepository)(nil).FindByGroupID), ctx, groupID)
 }
 
 // Save mocks base method.

@@ -50,7 +50,7 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 		}
 
 		log.Info("creating assignment")
-		response, err := client.service.Create(spanContext, ConvertToBusinessAssignment(request))
+		response, err := client.service.Create(spanContext, ConvertToBusinessFormAssignment(request))
 		if err != nil {
 			log.Error("unable to create assignment", logging.Error(err))
 			tracing.SetSpanError(span, err)
