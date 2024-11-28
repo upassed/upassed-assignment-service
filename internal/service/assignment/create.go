@@ -21,7 +21,7 @@ var (
 	ErrDuplicateAssignmentsFound        = errors.New("found duplicate assignments")
 )
 
-func (service *serviceImpl) Create(ctx context.Context, assignment *business.Assignment) (*business.AssignmentCreateResponse, error) {
+func (service *serviceImpl) Create(ctx context.Context, assignment *business.FormAssignment) (*business.AssignmentCreateResponse, error) {
 	teacherUsername := ctx.Value(auth.UsernameKey).(string)
 
 	spanContext, span := otel.Tracer(service.cfg.Tracing.AssignmentTracerName).Start(ctx, "assignmentService#Create")

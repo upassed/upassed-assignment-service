@@ -8,7 +8,7 @@ import (
 )
 
 func TestConvertToDomainAssignment(t *testing.T) {
-	businessAssignment := util.RandomBusinessAssignment()
+	businessAssignment := util.RandomBusinessFormAssignment()
 	domainAssignments := assignment.ConvertToDomainAssignments(businessAssignment)
 
 	assert.Equal(t, len(businessAssignment.GroupIDs), len(domainAssignments))

@@ -22,7 +22,7 @@ func RandomEventAssignmentCreateRequest() *event.AssignmentCreateRequest {
 	}
 }
 
-func RandomBusinessAssignment() *business.Assignment {
+func RandomBusinessFormAssignment() *business.FormAssignment {
 	groupIDsCount := gofakeit.IntRange(10, 20)
 	groupIDs := make([]uuid.UUID, 0, groupIDsCount)
 
@@ -30,10 +30,25 @@ func RandomBusinessAssignment() *business.Assignment {
 		groupIDs = append(groupIDs, uuid.New())
 	}
 
-	return &business.Assignment{
+	return &business.FormAssignment{
 		ID:       uuid.New(),
 		FormID:   uuid.New(),
 		GroupIDs: groupIDs,
+	}
+}
+
+func RandomBusinessGroupAssignment() *business.GroupAssignment {
+	formIDsCount := gofakeit.IntRange(10, 20)
+	formIDs := make([]uuid.UUID, 0, formIDsCount)
+
+	for i := 0; i < formIDsCount; i++ {
+		formIDs = append(formIDs, uuid.New())
+	}
+
+	return &business.GroupAssignment{
+		ID:      uuid.New(),
+		GroupID: uuid.New(),
+		FormIDs: formIDs,
 	}
 }
 

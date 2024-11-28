@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package api;
+
+import "validate/validate.proto";
+
+option go_package = "upassed.assignment.v1;client";
+
+service Assignment {
+  rpc FindByFormID(AssignmentFindByFormIDRequest) returns (AssignmentFindByFormIDResponse);
+  rpc FindByGroupID(AssignmentFindByGroupIDRequest) returns (AssignmentFindByGroupIDResponse);
+}
+
+message AssignmentFindByFormIDRequest {
+  string form_id = 1 [(validate.rules).string.uuid = true];
+}
+
+message AssignmentFindByFormIDResponse {
+  repeated string group_ids = 1;
+}
+
+message AssignmentFindByGroupIDRequest {
+  string group_id = 1 [(validate.rules).string.uuid = true];
+}
+
+message AssignmentFindByGroupIDResponse {
+  repeated string form_ids = 1;
+}

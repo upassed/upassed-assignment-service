@@ -5,7 +5,7 @@ import (
 	business "github.com/upassed/upassed-assignment-service/internal/service/model"
 )
 
-func ConvertToDomainAssignments(assignment *business.Assignment) []*domain.Assignment {
+func ConvertToDomainAssignments(assignment *business.FormAssignment) []*domain.Assignment {
 	domainAssignments := make([]*domain.Assignment, 0, len(assignment.GroupIDs))
 	for _, groupID := range assignment.GroupIDs {
 		domainAssignments = append(domainAssignments, &domain.Assignment{

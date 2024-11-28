@@ -57,7 +57,7 @@ func TestCreate_ErrorCheckingAssignmentDuplicates(t *testing.T) {
 	teacherUsername := gofakeit.Username()
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
 
-	assignmentToCreate := util.RandomBusinessAssignment()
+	assignmentToCreate := util.RandomBusinessFormAssignment()
 	expectedRepositoryError := errors.New("some repo error")
 
 	repository.EXPECT().
@@ -76,7 +76,7 @@ func TestCreate_ErrorDuplicateAssignmentsFound(t *testing.T) {
 	teacherUsername := gofakeit.Username()
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
 
-	assignmentToCreate := util.RandomBusinessAssignment()
+	assignmentToCreate := util.RandomBusinessFormAssignment()
 	duplicateAssignments := util.RandomDomainAssignments()
 
 	repository.EXPECT().
@@ -95,7 +95,7 @@ func TestCreate_ErrorSavingAssignment(t *testing.T) {
 	teacherUsername := gofakeit.Username()
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
 
-	assignmentToCreate := util.RandomBusinessAssignment()
+	assignmentToCreate := util.RandomBusinessFormAssignment()
 	expectedRepositoryError := errors.New("some repo error")
 
 	repository.EXPECT().
@@ -121,7 +121,7 @@ func TestCreate_ErrorDeadlineExceeded(t *testing.T) {
 	teacherUsername := gofakeit.Username()
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
 
-	assignmentToCreate := util.RandomBusinessAssignment()
+	assignmentToCreate := util.RandomBusinessFormAssignment()
 
 	repository.EXPECT().
 		CheckDuplicates(gomock.Any(), gomock.Any()).
@@ -145,7 +145,7 @@ func TestCreate_HappyPath(t *testing.T) {
 	teacherUsername := gofakeit.Username()
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
 
-	assignmentToCreate := util.RandomBusinessAssignment()
+	assignmentToCreate := util.RandomBusinessFormAssignment()
 
 	repository.EXPECT().
 		CheckDuplicates(gomock.Any(), gomock.Any()).

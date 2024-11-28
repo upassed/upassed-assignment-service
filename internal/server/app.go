@@ -9,6 +9,8 @@ import (
 	loggingMiddleware "github.com/upassed/upassed-assignment-service/internal/middleware/grpc/logging"
 	"github.com/upassed/upassed-assignment-service/internal/middleware/grpc/recovery"
 	requestid "github.com/upassed/upassed-assignment-service/internal/middleware/grpc/request_id"
+	"github.com/upassed/upassed-assignment-service/internal/server/assignment"
+	assignmentSvc "github.com/upassed/upassed-assignment-service/internal/service/assignment"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -26,12 +28,13 @@ type AppServer struct {
 }
 
 type AppServerCreateParams struct {
-	Config     *config.Config
-	Log        *slog.Logger
-	AuthClient auth.Client
+	Config            *config.Config
+	Log               *slog.Logger
+	AuthClient        auth.Client
+	AssignmentService assignmentSvc.Service
 }
 
-func New(params AppServerCreateParams) (*AppServer, error) {
+func New(params AppServerCreateParams) *AppServer {
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			requestid.MiddlewareInterceptor(),
@@ -41,11 +44,12 @@ func New(params AppServerCreateParams) (*AppServer, error) {
 		),
 	)
 
+	assignment.Register(server, params.Config, params.AssignmentService)
 	return &AppServer{
 		config: params.Config,
 		log:    params.Log,
 		server: server,
-	}, nil
+	}
 }
 
 func (server *AppServer) Run() error {

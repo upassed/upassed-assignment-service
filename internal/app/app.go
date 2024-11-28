@@ -45,16 +45,12 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 	assignmentService := assignmentSvc.New(config, log, assignmentRepository)
 	assignmentRabbit.Initialize(authClient, assignmentService, rabbit, config, log)
 
-	appServer, err := server.New(server.AppServerCreateParams{
-		Config:     config,
-		Log:        log,
-		AuthClient: authClient,
+	appServer := server.New(server.AppServerCreateParams{
+		Config:            config,
+		Log:               log,
+		AuthClient:        authClient,
+		AssignmentService: assignmentService,
 	})
-
-	if err != nil {
-		log.Error("unable to create new grpc server", logging.Error(err))
-		return nil, err
-	}
 
 	log.Info("app successfully created")
 	return &App{
