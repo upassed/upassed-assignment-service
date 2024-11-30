@@ -101,6 +101,8 @@ jobs:
               -e GRPC_SERVER_TIMEOUT=${{ secrets.GRPC_SERVER_TIMEOUT }} \
               -e MIGRATIONS_PATH=${{ secrets.MIGRATIONS_PATH }} \
               -e MIGRATIONS_TABLE_NAME=${{ secrets.MIGRATIONS_TABLE_NAME }} \
+              -e AUTHENTICATION_SERVICE_HOST=${{ secrets.AUTHENTICATION_SERVICE_HOST }} \
+              -e AUTHENTICATION_SERVICE_PORT=${{ secrets.AUTHENTICATION_SERVICE_PORT }} \
               -e ENDPOINT_EXECUTION_TIMEOUT_MS=${{ secrets.ENDPOINT_EXECUTION_TIMEOUT_MS }} \
               -e JAEGER_HOST=${{ secrets.JAEGER_HOST }} \
               -e JAEGER_PORT=${{ secrets.JAEGER_PORT }} \
