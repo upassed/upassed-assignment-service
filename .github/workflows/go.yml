@@ -117,8 +117,8 @@ jobs:
               -e RABBIT_PORT=${{ secrets.RABBIT_PORT }} \
               -e RABBIT_EXCHANGE_NAME=${{ secrets.RABBIT_EXCHANGE_NAME }} \
               -e RABBIT_EXCHANGE_TYPE=${{ secrets.RABBIT_EXCHANGE_TYPE }} \
-              -e RABBIT_STUDENT_CREATE_QUEUE_NAME=${{ secrets.RABBIT_ASSIGNMENT_CREATE_QUEUE_NAME }} \
-              -e RABBIT_STUDENT_CREATE_QUEUE_ROUTING_KEY=${{ secrets.RABBIT_ASSIGNMENT_CREATE_QUEUE_ROUTING_KEY }} \
+              -e RABBIT_ASSIGNMENT_CREATE_QUEUE_NAME=${{ secrets.RABBIT_ASSIGNMENT_CREATE_QUEUE_NAME }} \
+              -e RABBIT_ASSIGNMENT_CREATE_QUEUE_ROUTING_KEY=${{ secrets.RABBIT_ASSIGNMENT_CREATE_QUEUE_ROUTING_KEY }} \
               -p ${{ secrets.GRPC_SERVER_PORT }}:${{ secrets.GRPC_SERVER_PORT }} \
               ${{ secrets.DOCKER_USERNAME }}/upassed-assignment-service:latest
           EOF
