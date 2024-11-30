@@ -105,7 +105,7 @@ func TestGetByGroupID_AssignmentsNotFound(t *testing.T) {
 	assert.Equal(t, 0, len(existingAssignments))
 }
 
-func TestSaveByGroupID_HappyPath(t *testing.T) {
+func TestAddByGroupID_HappyPath(t *testing.T) {
 	groupID := uuid.New()
 	ctx := context.Background()
 
@@ -130,4 +130,17 @@ func TestSaveByGroupID_HappyPath(t *testing.T) {
 	existingAssignments, err = redisClient.GetByGroupID(ctx, groupID)
 	require.NoError(t, err)
 	assert.Equal(t, len(assignmentsToSave), len(existingAssignments))
+}
+
+func TestSaveByGroupID(t *testing.T) {
+	groupID := uuid.New()
+	ctx := context.Background()
+
+	assignmentsToSave := util.RandomDomainAssignments()
+	for _, assignmentToSave := range assignmentsToSave {
+		assignmentToSave.GroupID = groupID
+	}
+
+	err := redisClient.SaveByGroupID(ctx, assignmentsToSave)
+	require.NoError(t, err)
 }

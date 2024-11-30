@@ -127,3 +127,63 @@ func TestSave_HappyPath(t *testing.T) {
 
 	assert.Equal(t, len(assignmentsToSave), len(cachedAssignments))
 }
+
+func TestFindByFormID_HappyPath(t *testing.T) {
+	ctx := context.Background()
+	formID := uuid.New()
+	assignmentsToSave := util.RandomDomainAssignments()
+
+	for _, domainAssignment := range assignmentsToSave {
+		domainAssignment.FormID = formID
+	}
+
+	err := assignmentRepository.Save(ctx, assignmentsToSave)
+	require.NoError(t, err)
+
+	foundAssignments, err := assignmentRepository.FindByFormID(ctx, formID)
+	require.NoError(t, err)
+
+	assert.Equal(t, len(assignmentsToSave), len(foundAssignments))
+	for idx, foundAssignment := range foundAssignments {
+		assert.Equal(t, assignmentsToSave[idx].ID, foundAssignment.ID)
+		assert.Equal(t, assignmentsToSave[idx].FormID, foundAssignment.FormID)
+		assert.Equal(t, assignmentsToSave[idx].GroupID, foundAssignment.GroupID)
+	}
+
+	cachedAssignments, err := assignmentCache.GetByFormID(ctx, formID)
+	require.NoError(t, err)
+
+	assert.Equal(t, len(assignmentsToSave), len(cachedAssignments))
+	for idx, cachedAssignment := range cachedAssignments {
+		assert.Equal(t, assignmentsToSave[idx].ID, cachedAssignment.ID)
+		assert.Equal(t, assignmentsToSave[idx].FormID, cachedAssignment.FormID)
+		assert.Equal(t, assignmentsToSave[idx].GroupID, cachedAssignment.GroupID)
+	}
+}
+
+func TestFindByGroupID_HappyPath(t *testing.T) {
+	ctx := context.Background()
+	formID := uuid.New()
+	groupID := uuid.New()
+	assignmentsToSave := util.RandomDomainAssignments()
+
+	for _, domainAssignment := range assignmentsToSave {
+		domainAssignment.FormID = formID
+	}
+
+	assignmentsToSave[0].GroupID = groupID
+	err := assignmentRepository.Save(ctx, assignmentsToSave)
+	require.NoError(t, err)
+
+	groupAssignments, err := assignmentRepository.FindByGroupID(ctx, groupID)
+	require.NoError(t, err)
+
+	assert.Equal(t, 1, len(groupAssignments))
+	assert.Equal(t, assignmentsToSave[0], groupAssignments[0])
+
+	cachedAssignments, err := assignmentCache.GetByGroupID(ctx, groupID)
+	require.NoError(t, err)
+
+	assert.Equal(t, 1, len(cachedAssignments))
+	assert.Equal(t, assignmentsToSave[0], cachedAssignments[0])
+}

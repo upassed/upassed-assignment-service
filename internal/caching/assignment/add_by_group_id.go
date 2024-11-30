@@ -3,17 +3,12 @@ package assignment
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/upassed/upassed-assignment-service/internal/logging"
 	domain "github.com/upassed/upassed-assignment-service/internal/repository/model"
 	"github.com/upassed/upassed-assignment-service/internal/tracing"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-)
-
-var (
-	errSavingAssignmentsByGroupIDIntoTheCache = errors.New("unable to save assignments data by group id into the cache")
 )
 
 func (client *RedisClient) AddByGroupID(ctx context.Context, assignment *domain.Assignment) error {

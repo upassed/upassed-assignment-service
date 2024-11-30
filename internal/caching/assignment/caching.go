@@ -15,6 +15,8 @@ const (
 var (
 	errUnmarshallingAssignmentsDataFromJson = errors.New("unable to unmarshall assignments data from the cache from json format")
 	errMarshallingAssignmentsDataToJson     = errors.New("unable to marshall assignments data to json format")
+
+	errSavingAssignmentsByGroupIDIntoTheCache = errors.New("unable to save assignments data by group id into the cache")
 )
 
 type RedisClient struct {
